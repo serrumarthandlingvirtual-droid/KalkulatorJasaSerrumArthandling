@@ -43,18 +43,15 @@
         }
     </script>
     <style>
-        /* Sembunyikan elemen tertentu saat mode cetak */
+        /* Gaya Khusus Cetak Menggunakan Sistem CSS Display */
         @media print {
-            .no-print {
+            header, main, footer, #toast, .no-print {
                 display: none !important;
             }
-            body {
+            #pdf-print-template {
+                display: block !important;
                 background: white !important;
-                color: black !important;
-            }
-            .print-card {
-                box-shadow: none !important;
-                border: 1px solid #ddd !important;
+                color: #1e1a17 !important;
             }
         }
         /* Custom scrollbar untuk estetika galeri */
@@ -113,8 +110,8 @@
             </p>
         </div>
 
-        <!-- FORM INFO KLIEN / EVENT (Sangat berguna untuk hasil print) -->
-        <div class="bg-white rounded-xl p-6 border border-gallery-200 shadow-sm mb-8">
+        <!-- FORM INFO KLIEN / EVENT -->
+        <div class="bg-white rounded-xl p-6 border border-gallery-200 shadow-sm mb-8 no-print">
             <h3 class="text-lg font-display font-bold text-gallery-900 mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-file-invoice text-gallery-500"></i> Informasi Event / Klien
             </h3>
@@ -199,37 +196,19 @@
 
             </div>
 
-            <!-- INVOICE / ESTIMATION SUMMARY (1 COL WIDE) -->
-            <div class="lg:col-span-1 lg:sticky lg:top-24 space-y-6" id="summary-section">
+            <!-- ESTIMATION SUMMARY CARD ON SCREEN (1 COL WIDE) -->
+            <div class="lg:col-span-1 lg:sticky lg:top-24 space-y-6 no-print" id="summary-section">
                 
                 <!-- CARD ESTIMASI UTAMA -->
-                <div class="bg-gallery-900 text-white rounded-xl p-6 shadow-md border border-gallery-800 print-card" id="invoice-capture">
+                <div class="bg-gallery-900 text-white rounded-xl p-6 shadow-md border border-gallery-800">
                     
-                    <!-- Header Nota (Hanya muncul optimal pas Print/PDF) -->
-                    <div class="hidden print:flex flex-col items-center text-center border-b border-gallery-700 pb-4 mb-4">
-                        <img 
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHjVP89EmhemqPCMSNOFCv6wpq9jzs6DWo4g&s" 
-                            alt="Logo" 
-                            class="h-14 w-14 object-cover rounded-lg bg-white mb-2"
-                        >
-                        <h2 class="text-xl font-display font-bold tracking-tight text-white">ART HANDLER INDONESIA</h2>
-                        <p class="text-[10px] text-gallery-300 tracking-wider">ESTIMASI BIAYA JASA PEMASANGAN KARYA SENI</p>
-                    </div>
-
                     <!-- Judul Estimasi -->
-                    <div class="flex items-center justify-between border-b border-gallery-800 pb-4 mb-4 print:border-b-0 print:pb-0">
+                    <div class="flex items-center justify-between border-b border-gallery-800 pb-4 mb-4">
                         <h3 class="font-display font-bold text-lg text-gallery-100">Ringkasan Estimasi</h3>
                         <span class="bg-gallery-800 text-gallery-300 text-xs px-2.5 py-1 rounded border border-gallery-700" id="item-counter">0 Item Terpilih</span>
                     </div>
 
-                    <!-- Identitas Print -->
-                    <div class="mb-4 text-xs space-y-1.5 border-b border-gallery-800 pb-4 text-gallery-300 hidden print:block">
-                        <p><strong>Klien:</strong> <span id="p-client">-</span></p>
-                        <p><strong>Projek:</strong> <span id="p-project">-</span></p>
-                        <p><strong>Tanggal Kerja:</strong> <span id="p-date">-</span></p>
-                    </div>
-
-                    <!-- Daftar Item Terpilih (Kecil/Kompak) -->
+                    <!-- Daftar Item Terpilih (Kompak) -->
                     <div class="max-h-60 overflow-y-auto pr-1 mb-4 text-sm divide-y divide-gallery-800" id="selected-items-list">
                         <!-- Default Kosong State -->
                         <div class="py-6 text-center text-gallery-400 text-xs italic" id="empty-state">
@@ -245,7 +224,7 @@
                         </div>
                         
                         <!-- Form Diskon (Interactive) -->
-                        <div class="flex items-center justify-between gap-4 no-print py-1">
+                        <div class="flex items-center justify-between gap-4 py-1">
                             <span class="text-xs">Diskon / Potongan</span>
                             <div class="flex items-center gap-1 max-w-[120px]">
                                 <span class="text-xs text-gallery-400">Rp</span>
@@ -254,23 +233,11 @@
                         </div>
 
                         <!-- Form Transport (Interactive) -->
-                        <div class="flex items-center justify-between gap-4 no-print py-1">
+                        <div class="flex items-center justify-between gap-4 py-1">
                             <span class="text-xs">Uang Transport / Logistik</span>
                             <div class="flex items-center gap-1 max-w-[120px]">
                                 <span class="text-xs text-gallery-400">Rp</span>
                                 <input type="number" id="calc-transport" value="0" min="0" oninput="calculateTotal()" class="w-full bg-gallery-800 border border-gallery-700 rounded px-1.5 py-0.5 text-right text-xs text-white focus:outline-none focus:border-gallery-500">
-                            </div>
-                        </div>
-
-                        <!-- Menampilkan Diskon/Transport saat di-print -->
-                        <div class="hidden print:block space-y-1">
-                            <div class="flex justify-between text-xs">
-                                <span>Diskon</span>
-                                <span class="text-white" id="p-discount">Rp 0</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span>Logistik & Transport</span>
-                                <span class="text-white" id="p-transport">Rp 0</span>
                             </div>
                         </div>
                     </div>
@@ -282,40 +249,22 @@
                     </div>
 
                     <!-- Catatan Tambahan -->
-                    <div class="mt-4 pt-4 border-t border-gallery-800 no-print">
+                    <div class="mt-4 pt-4 border-t border-gallery-800">
                         <label class="block text-xs text-gallery-400 mb-1">Catatan Tambahan (misal: syarat pembayaran, tenggat waktu):</label>
                         <textarea id="calc-notes" rows="2" placeholder="Ketikan syarat & ketentuan di sini..." class="w-full bg-gallery-800 text-xs border border-gallery-700 rounded p-2 text-white focus:outline-none focus:border-gallery-500"></textarea>
-                    </div>
-
-                    <!-- Catatan Tambahan saat print -->
-                    <div class="hidden print:block mt-6 pt-4 border-t border-gallery-600 text-[10px] text-gallery-300">
-                        <p class="font-bold text-white mb-1">Catatan/Keterangan:</p>
-                        <p id="p-notes" class="italic whitespace-pre-line">-</p>
-                    </div>
-
-                    <!-- Tanda Tangan saat print -->
-                    <div class="hidden print:grid grid-cols-2 gap-4 mt-8 pt-6 text-center text-xs text-white">
-                        <div>
-                            <p class="mb-12 text-gallery-400">Pemberi Kerja</p>
-                            <p class="border-t border-gallery-700 pt-1 mx-4">( _________________ )</p>
-                        </div>
-                        <div>
-                            <p class="mb-12 text-gallery-400">Penanggung Jawab Art Handler</p>
-                            <p class="border-t border-gallery-700 pt-1 mx-4">( _________________ )</p>
-                        </div>
                     </div>
 
                 </div>
 
                 <!-- AKSI EKSPOR DAN CETAK -->
-                <div class="bg-white rounded-xl p-5 border border-gallery-200 shadow-sm space-y-3 no-print">
+                <div class="bg-white rounded-xl p-5 border border-gallery-200 shadow-sm space-y-3">
                     <h4 class="font-display font-bold text-gallery-900 text-sm tracking-wide flex items-center gap-1.5">
                         <i class="fa-solid fa-file-export text-gallery-500"></i> EKSPOR DAN PRINT
                     </h4>
                     
                     <div class="grid grid-cols-2 gap-2">
                         <!-- Direct Print -->
-                        <button onclick="window.print()" class="flex items-center justify-center gap-2 bg-gallery-950 hover:bg-gallery-800 text-white text-xs font-semibold py-2.5 px-3 rounded transition">
+                        <button onclick="triggerPrint()" class="flex items-center justify-center gap-2 bg-gallery-950 hover:bg-gallery-800 text-white text-xs font-semibold py-2.5 px-3 rounded transition">
                             <i class="fa-solid fa-print"></i> Print Langsung
                         </button>
                         <!-- PDF Download -->
@@ -361,7 +310,107 @@
         </div>
     </footer>
 
-    <!-- CUSTOM TOAST NOTIFIKASI (MENGGANTIKAN ALERT JAUH LEBIH MODERN & PREMIUM) -->
+    <!-- DEDICATED PRINT & PDF INVOICE TEMPLATE (SISTEM DESAIN RESOLUSI TINGGI UNTUK HASIL PRINT/PDF SEMPURNA) -->
+    <div id="pdf-print-template" class="hidden bg-white p-10 text-neutral-800 font-sans max-w-[800px] mx-auto border border-neutral-200">
+        <!-- Logo & Header -->
+        <div class="flex justify-between items-start border-b-2 border-neutral-900 pb-6 mb-6">
+            <div class="flex items-center gap-4">
+                <img 
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHjVP89EmhemqPCMSNOFCv6wpq9jzs6DWo4g&s" 
+                    alt="Logo" 
+                    class="h-16 w-16 object-cover rounded-lg border border-neutral-300"
+                >
+                <div>
+                    <h1 class="font-display font-bold text-2xl tracking-tight text-neutral-900">ART HANDLER INDONESIA</h1>
+                    <p class="text-xs text-neutral-500 uppercase tracking-widest">Exhibition & Installation Services</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <span class="bg-neutral-900 text-white text-[10px] font-bold px-3 py-1 uppercase tracking-wider">Surat Estimasi Biaya</span>
+                <p class="text-xs text-neutral-500 mt-2">Nomor Dokumen: <span id="pdf-invoice-no" class="font-semibold text-neutral-800">-</span></p>
+                <p class="text-xs text-neutral-500">Tanggal Buat: <span id="pdf-invoice-date" class="font-semibold text-neutral-800">-</span></p>
+            </div>
+        </div>
+
+        <!-- Identitas Project -->
+        <div class="grid grid-cols-2 gap-6 bg-neutral-50 p-4 rounded-lg mb-6 border border-neutral-200">
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Informasi Klien</p>
+                <p class="text-sm font-semibold text-neutral-800" id="pdf-client-name">-</p>
+                <p class="text-xs text-neutral-500">Pemberi Kerja Utama</p>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Informasi Projek / Event</p>
+                <p class="text-sm font-semibold text-neutral-800" id="pdf-project-name">-</p>
+                <p class="text-xs text-neutral-500">Tanggal Rencana: <span id="pdf-work-date" class="font-medium text-neutral-800">-</span></p>
+            </div>
+        </div>
+
+        <!-- Tabel Item Jasa Pilihan -->
+        <table class="w-full text-left border-collapse mb-8">
+            <thead>
+                <tr class="border-b-2 border-neutral-800 text-[11px] font-bold uppercase text-neutral-600 bg-neutral-100">
+                    <th class="py-3 px-2 text-center w-10">No</th>
+                    <th class="py-3 px-2">Deskripsi Layanan / Item Karya</th>
+                    <th class="py-3 px-2 text-center w-16">Qty</th>
+                    <th class="py-3 px-2 text-center w-20">Satuan</th>
+                    <th class="py-3 px-2 text-right w-32">Harga Satuan</th>
+                    <th class="py-3 px-2 text-right w-32">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="pdf-table-body" class="divide-y divide-neutral-200">
+                <!-- Javascript akan memasukkan baris pilihan pengguna di sini -->
+            </tbody>
+        </table>
+
+        <!-- Ringkasan Keuangan -->
+        <div class="flex justify-between items-start gap-8 mb-8">
+            <!-- Catatan Pelengkap -->
+            <div class="w-1/2">
+                <p class="text-xs font-bold uppercase text-neutral-500 border-b border-neutral-300 pb-1 mb-2">Syarat & Catatan Khusus:</p>
+                <p id="pdf-notes" class="text-xs text-neutral-600 italic whitespace-pre-wrap leading-relaxed">-</p>
+            </div>
+
+            <!-- Detail Kalkulasi -->
+            <div class="w-1/2 space-y-2 text-sm">
+                <div class="flex justify-between text-neutral-600">
+                    <span>Subtotal Jasa</span>
+                    <span id="pdf-subtotal">Rp 0</span>
+                </div>
+                <div class="flex justify-between text-neutral-600">
+                    <span>Diskon / Potongan</span>
+                    <span id="pdf-discount" class="text-red-600">-Rp 0</span>
+                </div>
+                <div class="flex justify-between text-neutral-600 border-b border-neutral-200 pb-2">
+                    <span>Logistik & Transport</span>
+                    <span id="pdf-transport">Rp 0</span>
+                </div>
+                <div class="flex justify-between font-display font-bold text-base text-neutral-900 pt-1">
+                    <span>ESTIMASI TOTAL</span>
+                    <span id="pdf-total" class="text-lg">Rp 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bagian Tanda Tangan Resmi -->
+        <div class="grid grid-cols-2 gap-4 pt-12 text-center text-xs text-neutral-800">
+            <div>
+                <p class="text-neutral-500 mb-16">Pemberi Kerja / Klien</p>
+                <p class="border-t border-neutral-300 pt-1.5 mx-12 font-semibold">( _________________ )</p>
+            </div>
+            <div>
+                <p class="text-neutral-500 mb-16">Penanggung Jawab Art Handler</p>
+                <p class="border-t border-neutral-300 pt-1.5 mx-12 font-semibold">( _________________ )</p>
+            </div>
+        </div>
+
+        <!-- Footer Nota -->
+        <div class="text-center text-[10px] text-neutral-400 mt-12 border-t border-neutral-200 pt-4">
+            *Dokumen ini merupakan estimasi awal pameran seni rupa. Nilai riil dapat disesuaikan kembali berdasarkan kondisi lapangan.
+        </div>
+    </div>
+
+    <!-- CUSTOM TOAST NOTIFIKASI -->
     <div id="toast" class="fixed bottom-5 right-5 z-[9999] transform translate-y-20 opacity-0 bg-gallery-900 text-white border border-gallery-700 px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transition-all duration-300 max-w-sm">
         <i id="toast-icon" class="fa-solid fa-circle-check text-gallery-300"></i>
         <p id="toast-message" class="text-xs font-medium"></p>
@@ -370,7 +419,7 @@
 
     <!-- ==================== LOGIKA CORE JAVASCRIPT ==================== -->
     <script>
-        // Database 30 Item Layanan Arthandler Profesional (Mudah Diedit/Ditambah Kedepannya)
+        // Database 30 Item Layanan Arthandler Profesional
         const SERVICES_DATABASE = [
             // Kategori 2D
             {
@@ -621,17 +670,16 @@
             }
         ];
 
-        // State Penyimpanan Pilihan User (Menggunakan Memory Map)
+        // State Penyimpanan Pilihan User (Memory Map)
         let cart = {};
 
-        // Inisialisasi Aplikasi Saat Selesai Loading DOM
+        // Inisialisasi Aplikasi
         window.addEventListener('DOMContentLoaded', () => {
             renderServices();
-            setupFormListeners();
             calculateTotal();
         });
 
-        // Merender Seluruh Pilihan Jasa Secara Dinamis Berdasarkan Kategori
+        // Merender Seluruh Pilihan Jasa
         function renderServices() {
             const categories = {
                 "2d": document.getElementById('kategori-2d'),
@@ -640,7 +688,6 @@
                 "pendukung": document.getElementById('kategori-pendukung')
             };
 
-            // Bersihkan dahulu
             Object.values(categories).forEach(el => { if (el) el.innerHTML = ''; });
 
             SERVICES_DATABASE.forEach(item => {
@@ -667,9 +714,9 @@
                             </div>
                         </div>
 
-                        <!-- Kontrol Harga, Jumlah, dan Catatan Khusus -->
+                        <!-- Kontrol Harga, Jumlah, dan Satuan -->
                         <div class="flex flex-wrap items-center justify-between sm:justify-end gap-3 sm:gap-4 shrink-0">
-                            <!-- Input Harga Custom (Agar Fleksibel) -->
+                            <!-- Input Harga Custom -->
                             <div class="flex flex-col">
                                 <span class="text-[10px] text-gallery-400 font-bold uppercase tracking-wider">Harga per ${item.satuan}</span>
                                 <div class="flex items-center gap-1 mt-0.5">
@@ -704,29 +751,6 @@
                     </div>
                 `;
                 targetElement.insertAdjacentHTML('beforeend', itemRowHtml);
-            });
-        }
-
-        // Listener untuk sinkronisasi teks input klien ke format cetak
-        function setupFormListeners() {
-            const inputs = ['clientName', 'projectName', 'workDate', 'calc-notes'];
-            inputs.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.addEventListener('input', () => {
-                        let printId = 'p-' + id.replace('calc-', '').replace('Name', '');
-                        const targetPrint = document.getElementById(printId);
-                        if (targetPrint) {
-                            if (id === 'workDate' && element.value) {
-                                // Format tanggal lebih ramah dibaca
-                                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                                targetPrint.innerText = new Date(element.value).toLocaleDateString('id-ID', options);
-                            } else {
-                                targetPrint.innerText = element.value || '-';
-                            }
-                        }
-                    });
-                }
             });
         }
 
@@ -778,24 +802,21 @@
                 cart[itemId].harga = price;
                 calculateTotal();
             } else {
-                // Jika dirubah nilainya tapi belum diceklis, kita auto ceklis demi kemudahan pengguna
                 checkbox.checked = true;
                 toggleItem(itemId);
             }
         }
 
-        // Fungsi Penghitungan Utama & Update Ringkasan Estimasi
+        // Fungsi Penghitungan Utama & Update Ringkasan Estimasi di Layar
         function calculateTotal() {
             const listContainer = document.getElementById('selected-items-list');
             const emptyState = document.getElementById('empty-state');
             const itemCounter = document.getElementById('item-counter');
             
-            // Bersihkan list kecuali state kosong
             const existingItems = listContainer.querySelectorAll('.selected-item-row');
             existingItems.forEach(el => el.remove());
 
             let subtotal = 0;
-            let totalItemsCount = 0;
 
             const cartKeys = Object.keys(cart);
 
@@ -810,9 +831,7 @@
                     const item = cart[key];
                     const itemSub = item.harga * item.qty;
                     subtotal += itemSub;
-                    totalItemsCount += item.qty;
 
-                    // Buat baris tampilan ringkasan
                     const itemHtml = `
                         <div class="py-2.5 flex justify-between items-start gap-4 selected-item-row text-xs">
                             <div class="flex-grow">
@@ -826,24 +845,17 @@
                 });
             }
 
-            // Dapatkan nilai diskon dan transport logistik
             const discount = parseFloat(document.getElementById('calc-discount').value) || 0;
             const transport = parseFloat(document.getElementById('calc-transport').value) || 0;
 
-            // Hitung Grand Total
             let total = subtotal - discount + transport;
             if (total < 0) total = 0;
 
-            // Update UI utama
             document.getElementById('calc-subtotal').innerText = `Rp ${formatRupiah(subtotal)}`;
             document.getElementById('calc-total').innerText = `Rp ${formatRupiah(total)}`;
-
-            // Update Sinkronisasi data print
-            document.getElementById('p-discount').innerText = `Rp ${formatRupiah(discount)}`;
-            document.getElementById('p-transport').innerText = `Rp ${formatRupiah(transport)}`;
         }
 
-        // Format Angka ke Rupiah Cantik
+        // Format Angka ke Rupiah
         function formatRupiah(angka) {
             return new Intl.NumberFormat('id-ID').format(angka);
         }
@@ -852,7 +864,6 @@
         function resetCalculator() {
             cart = {};
             
-            // Reset Form Info Klien
             document.getElementById('clientName').value = '';
             document.getElementById('projectName').value = '';
             document.getElementById('workDate').value = '';
@@ -860,13 +871,6 @@
             document.getElementById('calc-discount').value = '0';
             document.getElementById('calc-transport').value = '0';
 
-            // Sinkronisasi Cetak
-            document.getElementById('p-client').innerText = '-';
-            document.getElementById('p-project').innerText = '-';
-            document.getElementById('p-date').innerText = '-';
-            document.getElementById('p-notes').innerText = '-';
-
-            // Reset All Checkbox & Style Row
             SERVICES_DATABASE.forEach(item => {
                 const chk = document.getElementById(`chk-${item.id}`);
                 const qtyInput = document.getElementById(`qty-${item.id}`);
@@ -886,41 +890,137 @@
         }
 
 
-        /* ==================== EKSPOR ENGINE (DENGAN TINGKAT KEAMANAN TINGGI) ==================== */
+        /* ==================== SISTEM POPULASI TEMPLATE PRINT & PDF (PERBAIKAN CORE) ==================== */
 
-        // 1. Ekspor ke PDF (Menjaga Layout dan Responsif di Mobile/Desktop)
+        // Menyiapkan dan menyinkronkan seluruh data input ke template print ber-resolusi tinggi
+        function preparePrintTemplate() {
+            // Sinkronisasi data klien & pameran
+            const clientName = document.getElementById('clientName').value || 'Klien Umum / Galeri';
+            const projectName = document.getElementById('projectName').value || 'Pameran Seni Rupa';
+            const workDateInput = document.getElementById('workDate').value;
+            const notesText = document.getElementById('calc-notes').value || 'Syarat pembayaran standar berlaku. Seluruh kerusakan yang terjadi akibat kelalaian pemasangan ditanggung penuh oleh tim art handler.';
+
+            document.getElementById('pdf-client-name').innerText = clientName;
+            document.getElementById('pdf-project-name').innerText = projectName;
+            document.getElementById('pdf-notes').innerText = notesText;
+
+            // Format tanggal pameran
+            if (workDateInput) {
+                const optDate = { year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('pdf-work-date').innerText = new Date(workDateInput).toLocaleDateString('id-ID', optDate);
+            } else {
+                document.getElementById('pdf-work-date').innerText = 'Hubungi Tim Penjadwalan';
+            }
+
+            // Tanggal Pembuatan Quotation (Hari Ini)
+            const today = new Date();
+            const optToday = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('pdf-invoice-date').innerText = today.toLocaleDateString('id-ID', optToday);
+
+            // Generate nomor dokumen dinamis
+            const yy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('pdf-invoice-no').innerText = `AH/QO/${yy}${mm}${dd}/${Math.floor(100 + Math.random() * 900)}`;
+
+            // Populasi Item Jasa yang dipilih ke tabel print
+            const pdfTableBody = document.getElementById('pdf-table-body');
+            pdfTableBody.innerHTML = '';
+
+            let pdfSubtotal = 0;
+            let index = 1;
+
+            const cartKeys = Object.keys(cart);
+
+            if (cartKeys.length === 0) {
+                pdfTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-6 text-center text-neutral-400 italic text-xs">Belum ada item layanan yang Anda pilih.</td>
+                    </tr>
+                `;
+            } else {
+                cartKeys.forEach(key => {
+                    const item = cart[key];
+                    const itemSub = item.harga * item.qty;
+                    pdfSubtotal += itemSub;
+
+                    const rowHtml = `
+                        <tr class="text-xs text-neutral-700">
+                            <td class="py-3 px-2 text-center font-medium">${index++}</td>
+                            <td class="py-3 px-2 font-semibold text-neutral-900">${item.nama}</td>
+                            <td class="py-3 px-2 text-center">${item.qty}</td>
+                            <td class="py-3 px-2 text-center">${item.satuan}</td>
+                            <td class="py-3 px-2 text-right">Rp ${formatRupiah(item.harga)}</td>
+                            <td class="py-3 px-2 text-right font-bold text-neutral-900">Rp ${formatRupiah(itemSub)}</td>
+                        </tr>
+                    `;
+                    pdfTableBody.insertAdjacentHTML('beforeend', rowHtml);
+                });
+            }
+
+            // Penghitungan keuangan akhir untuk template cetak
+            const discount = parseFloat(document.getElementById('calc-discount').value) || 0;
+            const transport = parseFloat(document.getElementById('calc-transport').value) || 0;
+            let finalTotal = pdfSubtotal - discount + transport;
+            if (finalTotal < 0) finalTotal = 0;
+
+            document.getElementById('pdf-subtotal').innerText = `Rp ${formatRupiah(pdfSubtotal)}`;
+            document.getElementById('pdf-discount').innerText = `-Rp ${formatRupiah(discount)}`;
+            document.getElementById('pdf-transport').innerText = `Rp ${formatRupiah(transport)}`;
+            document.getElementById('pdf-total').innerText = `Rp ${formatRupiah(finalTotal)}`;
+        }
+
+        // Pemicu Print Langsung (Aman dan didesain penuh tanpa header/footer browser yang mengganggu)
+        function triggerPrint() {
+            if (Object.keys(cart).length === 0) {
+                showToast("Pilih minimal satu jasa terlebih dahulu sebelum melakukan Print.", true);
+                return;
+            }
+            preparePrintTemplate();
+            window.print();
+        }
+
+        // Ekspor ke PDF dengan Kualitas Format A4 Terbaik
         function exportToPDF() {
             if (Object.keys(cart).length === 0) {
-                showToast("Maaf, pilih minimal satu jasa sebelum mengekspor ke PDF.", true);
+                showToast("Maaf, pilih minimal satu jasa sebelum mengunduh PDF.", true);
                 return;
             }
 
-            showToast("Sedang menyiapkan dokumen PDF...");
+            showToast("Sedang memproses & menyelaraskan dokumen PDF...");
 
-            // Persiapan layout khusus PDF agar rapi
-            const element = document.getElementById('invoice-capture');
-            const clientVal = document.getElementById('clientName').value || 'Klien-Umum';
-            const projectVal = document.getElementById('projectName').value || 'Projek-Instalasi';
+            // Jalankan populasi data ke template cetak
+            preparePrintTemplate();
+
+            const element = document.getElementById('pdf-print-template');
+            
+            // Tampilkan elemen sementara (agar dibaca oleh engine render html2pdf)
+            element.classList.remove('hidden');
+
+            const clientVal = document.getElementById('clientName').value || 'Klien_Umum';
+            const projectVal = document.getElementById('projectName').value || 'Projek_Instalasi';
             
             const opt = {
-                margin:       [10, 10, 10, 10],
-                filename:     `Estimasi_ArtHandler_${clientVal.replace(/\s+/g, '_')}_${projectVal.replace(/\s+/g, '_')}.pdf`,
+                margin:       [12, 12, 12, 12],
+                filename:     `Estimasi_Art_Handler_${clientVal.replace(/\s+/g, '_')}_${projectVal.replace(/\s+/g, '_')}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, logging: false },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Menjalankan library html2pdf
+            // Menjalankan render PDF, lalu menyembunyikan kembali template dari layar screen
             html2pdf().set(opt).from(element).save()
                 .then(() => {
-                    showToast("PDF berhasil diunduh.");
+                    element.classList.add('hidden');
+                    showToast("PDF berhasil diunduh dengan sempurna.");
                 })
                 .catch(err => {
-                    showToast("Gagal memproses PDF. Silakan gunakan tombol Print Langsung.", true);
+                    element.classList.add('hidden');
+                    showToast("Gagal memproses PDF secara otomatis. Silakan gunakan tombol Print Langsung.", true);
                 });
         }
 
-        // 2. Ekspor ke Excel / CSV (Aman digunakan di Ms. Excel, Google Sheets, dll)
+        // Ekspor ke Excel / CSV
         function exportToExcel() {
             if (Object.keys(cart).length === 0) {
                 showToast("Pilih minimal satu jasa terlebih dahulu.", true);
@@ -929,26 +1029,21 @@
 
             let csvContent = "data:text/csv;charset=utf-8,";
             
-            // Header Identitas
             csvContent += `ESTIMASI BIAYA JASA ART HANDLER\n`;
             csvContent += `Klien,${document.getElementById('clientName').value || '-'}\n`;
             csvContent += `Projek,${document.getElementById('projectName').value || '-'}\n`;
             csvContent += `Tanggal Kerja,${document.getElementById('workDate').value || '-'}\n\n`;
 
-            // Header Tabel
             csvContent += "Nama Jasa / Deskripsi,Kuantitas,Satuan,Harga Satuan (IDR),Subtotal Jasa (IDR)\n";
 
-            // Baris Data Jasa
             let totalJasa = 0;
             Object.values(cart).forEach(item => {
                 const sub = item.harga * item.qty;
                 totalJasa += sub;
-                // Escape karakter koma agar struktur CSV aman
                 const escapedName = `"${item.nama.replace(/"/g, '""')}"`;
                 csvContent += `${escapedName},${item.qty},${item.satuan},${item.harga},${sub}\n`;
             });
 
-            // Footer Tambahan
             const discount = parseFloat(document.getElementById('calc-discount').value) || 0;
             const transport = parseFloat(document.getElementById('calc-transport').value) || 0;
             const grandTotal = totalJasa - discount + transport;
@@ -958,7 +1053,6 @@
             csvContent += `Transport & Logistik,,,Rp,${transport}\n`;
             csvContent += `GRAND TOTAL,,,Rp,${grandTotal}\n`;
 
-            // Membuat element link download semu
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
@@ -972,7 +1066,7 @@
             showToast("File CSV/Excel berhasil diunduh.");
         }
 
-        // 3. Ekspor ke Backup Data JSON (Sangat aman untuk diimpor/dibagikan kembali)
+        // Ekspor ke Backup Data JSON
         function exportToJSON() {
             const metaData = {
                 client: document.getElementById('clientName').value,
@@ -996,7 +1090,7 @@
             showToast("Backup JSON berhasil diunduh.");
         }
 
-        // Fungsi Pembantu Notifikasi Custom Toast (Menjamin UI mulus & premium)
+        // Fungsi Pembantu Notifikasi Custom Toast
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toast-message');
@@ -1014,11 +1108,9 @@
                 toastIcon.className = "fa-solid fa-circle-check text-gallery-300";
             }
 
-            // Tampilkan dengan transisi halus
             toast.classList.remove('translate-y-20', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100');
 
-            // Sembunyikan otomatis setelah 3,5 detik
             setTimeout(() => {
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-20', 'opacity-0');
