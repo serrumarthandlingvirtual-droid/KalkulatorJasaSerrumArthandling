@@ -49,11 +49,25 @@
                 display: none !important;
             }
             #pdf-print-template {
+                position: static !important;
                 display: block !important;
-                background: white !important;
-                color: #1e1a17 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
             }
         }
+        
+        /* Template Cetak diletakkan di luar layar (offscreen) agar ter-render sempurna oleh html2canvas */
+        #pdf-print-template {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 790px; /* Lebar optimal menyerupai rasio A4 */
+            background: white !important;
+            color: #1e1a17 !important;
+        }
+
         /* Custom scrollbar untuk estetika galeri */
         ::-webkit-scrollbar {
             width: 6px;
@@ -273,16 +287,10 @@
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2">
-                        <!-- Excel CSV Download -->
-                        <button onclick="exportToExcel()" class="flex items-center justify-center gap-2 bg-green-700 hover:bg-green-800 text-white text-xs font-semibold py-2.5 px-3 rounded transition">
-                            <i class="fa-solid fa-file-excel"></i> Unduh Excel/CSV
-                        </button>
-                        <!-- JSON Backup -->
-                        <button onclick="exportToJSON()" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2.5 px-3 rounded transition">
-                            <i class="fa-solid fa-code"></i> Unduh JSON
-                        </button>
-                    </div>
+                    <!-- Excel CSV Download -->
+                    <button onclick="exportToExcel()" class="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-800 text-white text-xs font-semibold py-2.5 px-3 rounded transition">
+                        <i class="fa-solid fa-file-excel"></i> Unduh Excel/CSV (Spreadsheet)
+                    </button>
 
                     <p class="text-[10px] text-gallery-500 text-center mt-1">
                         *Seluruh fitur berfungsi mandiri tanpa memerlukan server eksternal, sangat aman untuk diletakkan di GitHub.
@@ -311,7 +319,7 @@
     </footer>
 
     <!-- DEDICATED PRINT & PDF INVOICE TEMPLATE (SISTEM DESAIN RESOLUSI TINGGI UNTUK HASIL PRINT/PDF SEMPURNA) -->
-    <div id="pdf-print-template" class="hidden bg-white p-10 text-neutral-800 font-sans max-w-[800px] mx-auto border border-neutral-200">
+    <div id="pdf-print-template" class="bg-white p-10 text-neutral-800 font-sans border border-neutral-200" style="color: #1e1a17 !important;">
         <!-- Logo & Header -->
         <div class="flex justify-between items-start border-b-2 border-neutral-900 pb-6 mb-6">
             <div class="flex items-center gap-4">
@@ -321,14 +329,14 @@
                     class="h-16 w-16 object-cover rounded-lg border border-neutral-300"
                 >
                 <div>
-                    <h1 class="font-display font-bold text-2xl tracking-tight text-neutral-900">ART HANDLER INDONESIA</h1>
+                    <h1 class="font-display font-bold text-2xl tracking-tight text-neutral-900" style="color: #111827 !important;">ART HANDLER INDONESIA</h1>
                     <p class="text-xs text-neutral-500 uppercase tracking-widest">Exhibition & Installation Services</p>
                 </div>
             </div>
             <div class="text-right">
                 <span class="bg-neutral-900 text-white text-[10px] font-bold px-3 py-1 uppercase tracking-wider">Surat Estimasi Biaya</span>
-                <p class="text-xs text-neutral-500 mt-2">Nomor Dokumen: <span id="pdf-invoice-no" class="font-semibold text-neutral-800">-</span></p>
-                <p class="text-xs text-neutral-500">Tanggal Buat: <span id="pdf-invoice-date" class="font-semibold text-neutral-800">-</span></p>
+                <p class="text-xs text-neutral-500 mt-2">Nomor Dokumen: <span id="pdf-invoice-no" class="font-semibold text-neutral-800" style="color: #1f2937 !important;">-</span></p>
+                <p class="text-xs text-neutral-500">Tanggal Buat: <span id="pdf-invoice-date" class="font-semibold text-neutral-800" style="color: #1f2937 !important;">-</span></p>
             </div>
         </div>
 
@@ -336,13 +344,13 @@
         <div class="grid grid-cols-2 gap-6 bg-neutral-50 p-4 rounded-lg mb-6 border border-neutral-200">
             <div>
                 <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Informasi Klien</p>
-                <p class="text-sm font-semibold text-neutral-800" id="pdf-client-name">-</p>
+                <p class="text-sm font-semibold text-neutral-800" id="pdf-client-name" style="color: #111827 !important;">-</p>
                 <p class="text-xs text-neutral-500">Pemberi Kerja Utama</p>
             </div>
             <div>
                 <p class="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">Informasi Projek / Event</p>
-                <p class="text-sm font-semibold text-neutral-800" id="pdf-project-name">-</p>
-                <p class="text-xs text-neutral-500">Tanggal Rencana: <span id="pdf-work-date" class="font-medium text-neutral-800">-</span></p>
+                <p class="text-sm font-semibold text-neutral-800" id="pdf-project-name" style="color: #111827 !important;">-</p>
+                <p class="text-xs text-neutral-500">Tanggal Rencana: <span id="pdf-work-date" class="font-medium text-neutral-800" style="color: #1f2937 !important;">-</span></p>
             </div>
         </div>
 
@@ -350,15 +358,15 @@
         <table class="w-full text-left border-collapse mb-8">
             <thead>
                 <tr class="border-b-2 border-neutral-800 text-[11px] font-bold uppercase text-neutral-600 bg-neutral-100">
-                    <th class="py-3 px-2 text-center w-10">No</th>
-                    <th class="py-3 px-2">Deskripsi Layanan / Item Karya</th>
-                    <th class="py-3 px-2 text-center w-16">Qty</th>
-                    <th class="py-3 px-2 text-center w-20">Satuan</th>
-                    <th class="py-3 px-2 text-right w-32">Harga Satuan</th>
-                    <th class="py-3 px-2 text-right w-32">Subtotal</th>
+                    <th class="py-3 px-2 text-center w-10" style="color: #374151 !important;">No</th>
+                    <th class="py-3 px-2" style="color: #374151 !important;">Deskripsi Layanan / Item Karya</th>
+                    <th class="py-3 px-2 text-center w-16" style="color: #374151 !important;">Qty</th>
+                    <th class="py-3 px-2 text-center w-20" style="color: #374151 !important;">Satuan</th>
+                    <th class="py-3 px-2 text-right w-32" style="color: #374151 !important;">Harga Satuan</th>
+                    <th class="py-3 px-2 text-right w-32" style="color: #374151 !important;">Subtotal</th>
                 </tr>
             </thead>
-            <tbody id="pdf-table-body" class="divide-y divide-neutral-200">
+            <tbody id="pdf-table-body" class="divide-y divide-neutral-200" style="color: #1f2937 !important;">
                 <!-- Javascript akan memasukkan baris pilihan pengguna di sini -->
             </tbody>
         </table>
@@ -368,39 +376,39 @@
             <!-- Catatan Pelengkap -->
             <div class="w-1/2">
                 <p class="text-xs font-bold uppercase text-neutral-500 border-b border-neutral-300 pb-1 mb-2">Syarat & Catatan Khusus:</p>
-                <p id="pdf-notes" class="text-xs text-neutral-600 italic whitespace-pre-wrap leading-relaxed">-</p>
+                <p id="pdf-notes" class="text-xs text-neutral-600 italic whitespace-pre-wrap leading-relaxed" style="color: #4b5563 !important;">-</p>
             </div>
 
             <!-- Detail Kalkulasi -->
-            <div class="w-1/2 space-y-2 text-sm">
+            <div class="w-1/2 space-y-2 text-sm" style="color: #1f2937 !important;">
                 <div class="flex justify-between text-neutral-600">
                     <span>Subtotal Jasa</span>
-                    <span id="pdf-subtotal">Rp 0</span>
+                    <span id="pdf-subtotal" class="font-semibold" style="color: #111827 !important;">Rp 0</span>
                 </div>
                 <div class="flex justify-between text-neutral-600">
                     <span>Diskon / Potongan</span>
-                    <span id="pdf-discount" class="text-red-600">-Rp 0</span>
+                    <span id="pdf-discount" class="text-red-600 font-semibold" style="color: #dc2626 !important;">-Rp 0</span>
                 </div>
                 <div class="flex justify-between text-neutral-600 border-b border-neutral-200 pb-2">
                     <span>Logistik & Transport</span>
-                    <span id="pdf-transport">Rp 0</span>
+                    <span id="pdf-transport" class="font-semibold" style="color: #111827 !important;">Rp 0</span>
                 </div>
                 <div class="flex justify-between font-display font-bold text-base text-neutral-900 pt-1">
-                    <span>ESTIMASI TOTAL</span>
-                    <span id="pdf-total" class="text-lg">Rp 0</span>
+                    <span style="color: #111827 !important;">ESTIMASI TOTAL</span>
+                    <span id="pdf-total" class="text-lg text-neutral-950 font-bold" style="color: #030712 !important;">Rp 0</span>
                 </div>
             </div>
         </div>
 
         <!-- Bagian Tanda Tangan Resmi -->
-        <div class="grid grid-cols-2 gap-4 pt-12 text-center text-xs text-neutral-800">
+        <div class="grid grid-cols-2 gap-4 pt-12 text-center text-xs text-neutral-800" style="color: #1f2937 !important;">
             <div>
                 <p class="text-neutral-500 mb-16">Pemberi Kerja / Klien</p>
-                <p class="border-t border-neutral-300 pt-1.5 mx-12 font-semibold">( _________________ )</p>
+                <p class="border-t border-neutral-300 pt-1.5 mx-12 font-semibold" style="color: #111827 !important;">( _________________ )</p>
             </div>
             <div>
                 <p class="text-neutral-500 mb-16">Penanggung Jawab Art Handler</p>
-                <p class="border-t border-neutral-300 pt-1.5 mx-12 font-semibold">( _________________ )</p>
+                <p class="border-t border-neutral-300 pt-1.5 mx-12 font-semibold" style="color: #111827 !important;">( _________________ )</p>
             </div>
         </div>
 
@@ -935,7 +943,7 @@
             if (cartKeys.length === 0) {
                 pdfTableBody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="py-6 text-center text-neutral-400 italic text-xs">Belum ada item layanan yang Anda pilih.</td>
+                        <td colspan="6" class="py-6 text-center text-neutral-400 italic text-xs" style="color: #6b7280 !important;">Belum ada item layanan yang Anda pilih.</td>
                     </tr>
                 `;
             } else {
@@ -945,13 +953,13 @@
                     pdfSubtotal += itemSub;
 
                     const rowHtml = `
-                        <tr class="text-xs text-neutral-700">
-                            <td class="py-3 px-2 text-center font-medium">${index++}</td>
-                            <td class="py-3 px-2 font-semibold text-neutral-900">${item.nama}</td>
-                            <td class="py-3 px-2 text-center">${item.qty}</td>
-                            <td class="py-3 px-2 text-center">${item.satuan}</td>
-                            <td class="py-3 px-2 text-right">Rp ${formatRupiah(item.harga)}</td>
-                            <td class="py-3 px-2 text-right font-bold text-neutral-900">Rp ${formatRupiah(itemSub)}</td>
+                        <tr class="text-xs text-neutral-700" style="color: #374151 !important;">
+                            <td class="py-3 px-2 text-center font-medium" style="border-bottom: 1px solid #e5e7eb;">${index++}</td>
+                            <td class="py-3 px-2 font-semibold text-neutral-900" style="border-bottom: 1px solid #e5e7eb; color: #111827 !important;">${item.nama}</td>
+                            <td class="py-3 px-2 text-center" style="border-bottom: 1px solid #e5e7eb;">${item.qty}</td>
+                            <td class="py-3 px-2 text-center" style="border-bottom: 1px solid #e5e7eb;">${item.satuan}</td>
+                            <td class="py-3 px-2 text-right" style="border-bottom: 1px solid #e5e7eb;">Rp ${formatRupiah(item.harga)}</td>
+                            <td class="py-3 px-2 text-right font-bold text-neutral-900" style="border-bottom: 1px solid #e5e7eb; color: #111827 !important;">Rp ${formatRupiah(itemSub)}</td>
                         </tr>
                     `;
                     pdfTableBody.insertAdjacentHTML('beforeend', rowHtml);
@@ -980,7 +988,7 @@
             window.print();
         }
 
-        // Ekspor ke PDF dengan Kualitas Format A4 Terbaik
+        // Ekspor ke PDF dengan Kualitas Format A4 Terbaik (Menggunakan Off-screen render)
         function exportToPDF() {
             if (Object.keys(cart).length === 0) {
                 showToast("Maaf, pilih minimal satu jasa sebelum mengunduh PDF.", true);
@@ -994,28 +1002,28 @@
 
             const element = document.getElementById('pdf-print-template');
             
-            // Tampilkan elemen sementara (agar dibaca oleh engine render html2pdf)
-            element.classList.remove('hidden');
-
             const clientVal = document.getElementById('clientName').value || 'Klien_Umum';
             const projectVal = document.getElementById('projectName').value || 'Projek_Instalasi';
             
             const opt = {
-                margin:       [12, 12, 12, 12],
+                margin:       [10, 10, 10, 10],
                 filename:     `Estimasi_Art_Handler_${clientVal.replace(/\s+/g, '_')}_${projectVal.replace(/\s+/g, '_')}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    letterRendering: true
+                },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Menjalankan render PDF, lalu menyembunyikan kembali template dari layar screen
+            // Menjalankan render PDF (Elemen di off-screen akan terbaca secara sempurna dengan semua warna dan fontnya)
             html2pdf().set(opt).from(element).save()
                 .then(() => {
-                    element.classList.add('hidden');
                     showToast("PDF berhasil diunduh dengan sempurna.");
                 })
                 .catch(err => {
-                    element.classList.add('hidden');
                     showToast("Gagal memproses PDF secara otomatis. Silakan gunakan tombol Print Langsung.", true);
                 });
         }
@@ -1064,30 +1072,6 @@
             link.click();
             document.body.removeChild(link);
             showToast("File CSV/Excel berhasil diunduh.");
-        }
-
-        // Ekspor ke Backup Data JSON
-        function exportToJSON() {
-            const metaData = {
-                client: document.getElementById('clientName').value,
-                project: document.getElementById('projectName').value,
-                date: document.getElementById('workDate').value,
-                notes: document.getElementById('calc-notes').value,
-                discount: parseFloat(document.getElementById('calc-discount').value) || 0,
-                transport: parseFloat(document.getElementById('calc-transport').value) || 0,
-                selectedServices: cart,
-                exportedAt: new Date().toISOString()
-            };
-
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(metaData, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `Estimasi_Arthandler_Backup.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-
-            showToast("Backup JSON berhasil diunduh.");
         }
 
         // Fungsi Pembantu Notifikasi Custom Toast
